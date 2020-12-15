@@ -3,6 +3,5 @@ venv/*
 *.mp4
 *.csv
 *.dat
-*.sav
 detect_drowsiness.py
 blink_video.py

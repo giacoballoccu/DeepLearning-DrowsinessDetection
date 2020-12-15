@@ -53,7 +53,7 @@ def detect(Videopath):
 	# the facial landmark predictor
 	print("[INFO] loading facial landmark predictor...")
 	detector = dlib.get_frontal_face_detector()
-	predictor = dlib.shape_predictor("/home/dani/PycharmProjects/ProgettoDLA-Puglisi-/shape_predictor_68_face_landmarks.dat")
+	predictor = dlib.shape_predictor("/media/andrea/Dati2/DLA/ProgettoDLA-Puglisi-/shape_predictor_68_face_landmarks.dat")
 
 	# grab the indexes of the facial landmarks for the left and
 	# right eye, respectively

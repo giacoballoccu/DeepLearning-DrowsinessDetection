@@ -2,7 +2,7 @@ import os
 import csv
 from detect_blinks import *
 
-path = "/home/dani/Scrivania/DLA/"
+path = "/media/andrea/Dati2/DLA/Dataset"
 detect_blinks = "detect_blinks.py"
 
 print("....Video watching!!")
@@ -17,7 +17,7 @@ for video in os.listdir(path):
         else:
             label = 0
 
-        result_file = detect("/home/dani/PycharmProjects/ProgettoDLA-Puglisi-/blink_detection_demo.mp4")
+        result_file = detect("/media/andrea/Dati2/DLA/Dataset/blink_detection_demo.mp4")
 
         with open('resultCSV.csv', 'a', newline='') as file:
             writer = csv.writer(file)
