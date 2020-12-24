@@ -124,8 +124,8 @@ def gen(folder_list,window_size,stride,path1):
                 sleepy_blink_unrolled = unroll_in_time(normalized_blinks, window_size, stride)
                 sleepy_labels = 10 * np.ones([len(sleepy_blink_unrolled), 1])
 
-        tempX = np.concatenate((alert_blink_unrolled, semi_blink_unrolled, sleepy_blink_unrolled), axis=0)
-        tempY = np.concatenate((alert_labels, semi_labels, sleepy_labels), axis=0)
+        tempX = np.concatenate((alert_blink_unrolled, sleepy_blink_unrolled), axis=0)
+        tempY = np.concatenate((alert_labels, sleepy_labels), axis=0)
         if ID > 0:
             output = np.concatenate((output, tempX), axis=0)
             labels = np.concatenate((labels, tempY), axis=0)
@@ -241,7 +241,7 @@ def Preprocess(path1,window_size,stride,test_fold):
 
             tempX=np.concatenate((alert_blink_unrolled, sleepy_blink_unrolled),axis=0)
             tempY = np.concatenate((alert_labels, sleepy_labels), axis=0)
-            if test_fold!="Fold1":
+            if test_fold!="2":
                 start=0
             else:
                 start=1
@@ -262,11 +262,11 @@ def Preprocess(path1,window_size,stride,test_fold):
 path1='txt'
 window_size=30
 stride=2
-Training='./Blinks_prova.npy'
-Testing='./BlinksTest_prova.npy'
+Training='./npy/Blinks_prova.npy'
+Testing='./npy/BlinksTest_prova.npy'
 #################Normalizing with respect to different individuals####First Phase
-blinks,labels,blinksTest,labelTest=Preprocess(path1,window_size,stride,test_fold='Fold1')
+blinks,labels,blinksTest,labelTest=Preprocess(path1,window_size,stride,test_fold='1')
 np.save(open(Training,'wb'),blinks)
-np.save(open('./Labels_30_Fold3.npy', 'wb'),labels)
+np.save(open('./npy/Labels_30_Fold3.npy', 'wb'),labels)
 np.save(open(Testing, 'wb'),blinksTest)
-np.save(open('./LabelsTest_30_Fold3.npy', 'wb'),labelTest)
+np.save(open('./npy/LabelsTest_30_Fold3.npy', 'wb'),labelTest)

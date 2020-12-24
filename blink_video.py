@@ -543,7 +543,7 @@ def blink_detector(output_textfile, input_video):
 #############
 
 
-output_file = 'txt/1/Features0.txt'  #The text file to write to (for blinks)
+output_file = 'txt/1/umano1/alert.txt'  #The text file to write to (for blinks)
 pathA = '/media/andrea/Dati2/DLA/Dataset/10.MOV' # the path to the input video
 pathD = '/home/dani/Scrivania/DLA/0.mov'
 pathG = '/path/10/*.mov'
