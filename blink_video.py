@@ -63,6 +63,10 @@ def eye_aspect_ratio(eye):
     return ear
 
 
+
+
+
+
 #compute the mar of mouth
 def mouth_aspect_ratio(mouth):
     A = dist.euclidean(mouth[14], mouth[18])
