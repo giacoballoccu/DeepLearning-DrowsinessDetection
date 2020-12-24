@@ -62,11 +62,6 @@ def eye_aspect_ratio(eye):
 
     return ear
 
-
-
-
-
-
 #compute the mar of mouth
 def mouth_aspect_ratio(mouth):
     A = dist.euclidean(mouth[14], mouth[18])
@@ -325,7 +320,7 @@ def blink_detector(output_textfile, input_video):
 
 
         frame = imutils.resize(frame, width=450)
-        frame = imutils.rotate(frame,-90)
+        #frame = imutils.rotate(frame,-90)
         # To Rotate by 90 degreees
         # rows=np.shape(frame)[0]
         # cols = np.shape(frame)[1]
@@ -548,9 +543,10 @@ def blink_detector(output_textfile, input_video):
 #############
 
 
-output_file = 'alert.txt'  #The text file to write to (for blinks)
+output_file = 'txt/1/Features0.txt'  #The text file to write to (for blinks)
 pathA = '/media/andrea/Dati2/DLA/Dataset/10.MOV' # the path to the input video
-pathD = '/home/dani/Scrivania/DLA/10.MOV'
+pathD = '/home/dani/Scrivania/DLA/0.mov'
+pathG = '/path/10/*.mov'
 path = pathD
 
 blink_detector(output_file,path)
