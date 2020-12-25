@@ -259,13 +259,13 @@ def Preprocess(path1,window_size,stride,test_fold):
     return output,labels,outTest,labelTest
 
 #path1 is the address to the folder of all subjects, each subject has three txt files for alert, semisleepy and sleepy levels
-path1='txt'
+path1='Dataset/Fold3_part2.zip'
 window_size=30
 stride=2
 Training='./npy/Blinks_prova.npy'
 Testing='./npy/BlinksTest_prova.npy'
 #################Normalizing with respect to different individuals####First Phase
-blinks,labels,blinksTest,labelTest=Preprocess(path1,window_size,stride,test_fold='1')
+blinks,labels,blinksTest,labelTest=Preprocess(path1,window_size,stride,test_fold='34')
 np.save(open(Training,'wb'),blinks)
 np.save(open('./npy/Labels_30_Fold3.npy', 'wb'),labels)
 np.save(open(Testing, 'wb'),blinksTest)

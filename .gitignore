@@ -1,6 +1,9 @@
 venv/*
 *.wav
 *.mp4
+*.mov
+*.MOV
+*.MP4
 *.csv
 *.dat
 detect_drowsiness.py
