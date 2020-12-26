@@ -20,7 +20,28 @@ import pickle
 from queue import Queue
 import numpy as np
 import cv2
+import ffmpeg
 
+
+def check_rotation(path_video_file):
+    # this returns meta-data of the video file in form of a dictionary
+    meta_dict = ffmpeg.probe(path_video_file)
+
+    # from the dictionary, meta_dict['streams'][0]['tags']['rotate'] is the key
+    # we are looking for
+    rotateCode = None
+    if int(meta_dict['streams'][0]['tags']['rotate']) == 90:
+        rotateCode = cv2.ROTATE_90_CLOCKWISE
+    elif int(meta_dict['streams'][0]['tags']['rotate']) == 180:
+        rotateCode = cv2.ROTATE_180
+    elif int(meta_dict['streams'][0]['tags']['rotate']) == 270:
+        rotateCode = cv2.ROTATE_90_COUNTERCLOCKWISE
+
+    return rotateCode
+
+
+def correct_rotation(frame, rotateCode):
+    return cv2.rotate(frame, rotateCode)
 
 class Blink():
     def __init__(self):
@@ -212,7 +233,8 @@ def blink_detector(output_textfile, input_video):
                             Last_Blink.values = signal.convolve1d(Last_Blink.values, [1 / 3.0, 1 / 3.0, 1 / 3.0],
                                                                   mode='nearest')
 
-                            # Last_Blink.values=signal.median_filter(Last_Blink.values, 3, mode='reflect')   #smoothing the signal
+                            # Last_Blink.values=signal.median_filter(Last_Blink.values, 3, mode='reflect')
+                            # #smoothing the signal
                             [MISSED_BLINKS, retrieved_blinks] = Ultimate_Blink_Check()
                             TOTAL_BLINKS = TOTAL_BLINKS + len(
                                 retrieved_blinks)  # Finally, approving/counting the previous blink candidate
@@ -323,6 +345,7 @@ def blink_detector(output_textfile, input_video):
 
     stream = cv2.VideoCapture(input_video)
     start = datetime.datetime.now()
+    rotateCode = check_rotation(input_video)
     number_of_frames = 0
     while True:
         (grabbed, frame) = stream.read()
@@ -330,6 +353,8 @@ def blink_detector(output_textfile, input_video):
             print('not grabbed')
             print(number_of_frames)
             break
+        if rotateCode is not None:
+            frame = correct_rotation(frame, rotateCode)
 
         frame = imutils.resize(frame, width=450)
         # frame = imutils.rotate(frame,-90)
@@ -553,7 +578,7 @@ pathD = '/home/dani/Scrivania/DLA/0.mov'
 pathG = '/path/10/*.mov'
 path = pathD
 
-folders = "Dataset/Fold3_part2.zip"
+folders = "Dataset/Fold3_part1.zip"
 folds_list = os.listdir(folders)
 threads = []
 for f, fold in enumerate(folds_list):
@@ -570,15 +595,15 @@ for f, fold in enumerate(folds_list):
                 output_file = path1 + '/' + folder + '/' + 'sleepy.txt'
             else:
                 output_file = path1 + '/' + folder + '/' + 'alert.txt'
-            blink_detector(output_textfile=output_file, input_video=path1 + '/' + folder + '/' + file )
-            #threads.append(Thread(target=blink_detector, args=(output_file, path1 + '/' + folder + '/' + file)))
+            blink_detector(output_textfile=output_file, input_video=path1 + '/' + folder + '/' + file)
+            # threads.append(Thread(target=blink_detector, args=(output_file, path1 + '/' + folder + '/' + file)))
 
 thread_queue = deque(maxlen=4)
 
 
 def video_queue_putter(thread_list):
     for video in thread_list:
-        while(thread_queue.__len__()==4):
+        while (thread_queue.__len__() == 4):
             time.sleep(5)
         thread_queue.append(video)
         video.start()
@@ -589,8 +614,7 @@ def video_queue_getter(thread_list):
         if not thread_queue[0].is_alive():
             thread_queue.pop()
 
-
-#putter = Thread(target=video_queue_putter, args=[threads])
-#getter = Thread(target=video_queue_getter, args=[threads])
-#putter.start()
-#getter.start()
+# putter = Thread(target=video_queue_putter, args=[threads])
+# getter = Thread(target=video_queue_getter, args=[threads])
+# putter.start()
+# getter.start()
