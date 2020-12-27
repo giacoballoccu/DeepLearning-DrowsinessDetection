@@ -29,6 +29,11 @@ def check_rotation(path_video_file):
 
     # from the dictionary, meta_dict['streams'][0]['tags']['rotate'] is the key
     # we are looking for
+    try:
+        meta_dict['streams'][0]['tags']['rotate']
+    except:
+        return None
+
     rotateCode = None
     if int(meta_dict['streams'][0]['tags']['rotate']) == 90:
         rotateCode = cv2.ROTATE_90_CLOCKWISE
@@ -42,6 +47,7 @@ def check_rotation(path_video_file):
 
 def correct_rotation(frame, rotateCode):
     return cv2.rotate(frame, rotateCode)
+
 
 class Blink():
     def __init__(self):
@@ -126,8 +132,10 @@ def Linear_Interpolate(start, end, N):
 
 
 # Core function
-def blink_detector(output_textfile, input_video):
+def blink_detector(output_file, input_video):
     Q = Queue(maxsize=7)
+    print("Analizyng: " + str(input_video))
+    print("TXT Output: " + str(output_file))
 
     FRAME_MARGIN_BTW_2BLINKS = 3
     MIN_AMPLITUDE = 0.04
@@ -313,7 +321,7 @@ def blink_detector(output_textfile, input_video):
     # Load the Facial Landmark Detector
     predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
     # Load the Blink Detector
-    loaded_svm = pickle.load(open('svm.sav', 'rb'))
+    loaded_svm = pickle.load(open('svm_C=1000_gamma=0.1.sav', 'rb'))
 
     # grab the indexes of the facial landmarks for the left and
     # right eye, respectively
@@ -469,7 +477,7 @@ def blink_detector(output_textfile, input_video):
                 line.set_ydata(EAR_series)
                 plot_frame.draw()
                 frameMinus7 = Q.get()
-                cv2.imshow("Frame", frameMinus7)
+                # cv2.imshow("Frame", frameMinus7)
             elif Q.full():  # just to make way for the new input of the Q when the Q is full
                 junk = Q.get()
 
@@ -553,7 +561,7 @@ def blink_detector(output_textfile, input_video):
                 line.set_ydata(EAR_series)
                 plot_frame.draw()
                 frameMinus7 = Q.get()
-                cv2.imshow("Frame", frameMinus7)
+                # cv2.imshow("Frame", frameMinus7)q
             elif Q.full():
                 junk = Q.get()
 
@@ -572,13 +580,8 @@ def blink_detector(output_textfile, input_video):
 #############
 
 
-output_file = 'txt/1/umano1/alert.txt'  # The text file to write to (for blinks)
-pathA = '/media/andrea/Dati2/DLA/Dataset/10.MOV'  # the path to the input video
-pathD = '/home/dani/Scrivania/DLA/0.mov'
-pathG = '/path/10/*.mov'
-path = pathD
 
-folders = "Dataset/Fold3_part1.zip"
+folders = "/media/andrea/Dati2/DLA/ProgettoDLA-Puglisi-/Dataset/Fold3_part1.zip"
 folds_list = os.listdir(folders)
 threads = []
 for f, fold in enumerate(folds_list):
@@ -595,7 +598,7 @@ for f, fold in enumerate(folds_list):
                 output_file = path1 + '/' + folder + '/' + 'sleepy.txt'
             else:
                 output_file = path1 + '/' + folder + '/' + 'alert.txt'
-            blink_detector(output_textfile=output_file, input_video=path1 + '/' + folder + '/' + file)
+            blink_detector(output_file, path1 + '/' + folder + '/' + file)
             # threads.append(Thread(target=blink_detector, args=(output_file, path1 + '/' + folder + '/' + file)))
 
 thread_queue = deque(maxlen=4)

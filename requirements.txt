@@ -17,6 +17,7 @@ matplotlib==3.3.3
 menpo==0.10.0
 networkx==2.5
 numpy==1.19.4
+ffmpeg-python==0.2.0
 opencv-contrib-python==4.4.0.46
 opencv-python==4.4.0.46
 Pillow==8.0.1
