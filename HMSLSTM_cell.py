@@ -1,5 +1,5 @@
 #reference: https://github.com/n-s-f/hierarchical-rnn/tree/master/hmlstm
-from tensorflow.contrib.rnn.python.ops import core_rnn_cell
+from tensorflow.python.ops import rnn_cell_impl as core_rnn_cell
 import tensorflow as tf
 import collections
 

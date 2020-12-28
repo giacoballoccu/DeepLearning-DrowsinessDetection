@@ -3,6 +3,7 @@ import HMSLSTM_Main as Main
 import tensorflow as tf
 import numpy as np
 # from matplotlib import pyplot as plt
+tf.compat.v1.disable_eager_execution()
 
 print(tf.__version__)
 
@@ -131,7 +132,7 @@ def calc_accuracy_per_batch(Y, predicts):  #Y_size=[Batch_size,1]
     return accuracy
 
 def batchNorm(x,beta,gamma,training,scope='bn'):
-    with tf.variable_scope(scope):
+    with tf.compat.v1.variable_scope(scope):
         batch_mean, batch_var = tf.nn.moments(x, [0], name='moments')
         ema = tf.train.ExponentialMovingAverage(decay=0.5)
         def mean_var_with_update():
@@ -150,10 +151,10 @@ def Network(input,Pre_fc1_size,Post_fc1_size_per_layer,embb_size,embb_size2,Post
 
     end_points = {}
     batch_size = tf.shape(input)[0]
-    with tf.variable_scope('pre_fc1'):
-        pre_fc1_weights=tf.get_variable('weights',[feature_size,Pre_fc1_size],dtype=tf.float32,
-                                        initializer=tf.contrib.layers.xavier_initializer(uniform=False,seed=None,dtype=tf.float32))
-        pre_fc1_biases = tf.get_variable('biases', [Pre_fc1_size], dtype=tf.float32,
+    with tf.compat.v1.variable_scope('pre_fc1'):
+        pre_fc1_weights=tf.compat.v1.get_variable('weights',[feature_size,Pre_fc1_size],dtype=tf.float32,
+                                        initializer=tf.initializers.glorot_uniform())
+        pre_fc1_biases = tf.compat.v1.get_variable('biases', [Pre_fc1_size], dtype=tf.float32,
                                           initializer=tf.constant_initializer(0.0))
 
 
@@ -301,12 +302,12 @@ def Train(total_input,total_labels,TestB,TestL,output_size,feature_size,batch_si
     #load: if True loads the weights from disk[Binary]
     #fold_num: decides that the model used is the one trained on all the folds except fold_num (if load==True)
             #  decides that the test model (if load==False)
-    tf.reset_default_graph()
+    tf.compat.v1.reset_default_graph()
     L2loss=0
-    input_net = tf.placeholder(tf.float32, shape=(None, None, feature_size), name='bacth_in')
-    labels = tf.placeholder(tf.float32, shape=(None, output_size), name='labels_net')  #size=[batch,1]
-    keep_p=tf.placeholder(tf.float32)
-    training = tf.placeholder(tf.bool,name='phase_train')
+    input_net = tf.compat.v1.placeholder(tf.float32, shape=(None, None, feature_size), name='bacth_in')
+    labels = tf.compat.v1.placeholder(tf.float32, shape=(None, output_size), name='labels_net')  #size=[batch,1]
+    keep_p=tf.compat.v1.placeholder(tf.float32)
+    training = tf.compat.v1.placeholder(tf.bool,name='phase_train')
     output,end_points,concati=Network(input=input_net,Pre_fc1_size=Pre_fc1_size,Post_fc1_size_per_layer=Post_fc1_size_per_layer,
                    embb_size=embb_size,embb_size2=embb_size2,Post_fc2_size=Post_fc2_size,hstate_size=hstate_size,num_layers=num_layers,
                    feature_size=feature_size,step_size=step_size,output_size=output_size,keep_p=keep_p,training=training)
@@ -405,16 +406,16 @@ def Train(total_input,total_labels,TestB,TestL,output_size,feature_size,batch_si
 
 ################################################
 load=False  #Load the weights from disk if True
-for i in range(5): #Cross validation but recommended to run each fold a few times to see the best perfomrance as you may
+for i in range(2): #Cross validation but recommended to run each fold a few times to see the best perfomrance as you may
     # get caught up in a local minimum
 
     ii=i    # ii decides the model and i decides the fold_num for test
     if load==True:
         ii=i+1
-    Blinks = np.load('Blinks_30_Fold%d.npy'%(i+1))
-    Labels = np.load('Labels_30_Fold%d.npy'%(i+1))
-    BlinksTest = np.load('BlinksTest_30_Fold%d.npy'%(i+1))
-    LabelsTest = np.load('./LabelsTest_30_Fold%d.npy'%(i+1))
+    Blinks = np.load('./npy/Blinks_F3.npy')
+    Labels = np.load('./npy/Labels_F3.npy')
+    BlinksTest = np.load('./npy/BlinksTest_F3.npy')
+    LabelsTest = np.load('./npy/LabelsTest_F3.npy')
     #deciding the indices of each video based on the fold
     #####################Normalizing the input#############Second phase
     BlinksTest[:,:,0]=(BlinksTest[:,:,0]-np.mean(Blinks[:,:,0]))/np.std(Blinks[:,:,0])
