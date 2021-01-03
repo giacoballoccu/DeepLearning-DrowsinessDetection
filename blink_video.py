@@ -596,7 +596,7 @@ for f, fold in enumerate(folds_list):
         for file in files_per_person:
             if file.startswith("10"):
                 output_file = path1 + '/' + folder + '/' + 'sleepy.txt'
-            else:
+            elif file.startswith("0"):
                 output_file = path1 + '/' + folder + '/' + 'alert.txt'
             blink_detector(output_file, path1 + '/' + folder + '/' + file)
             # threads.append(Thread(target=blink_detector, args=(output_file, path1 + '/' + folder + '/' + file)))
