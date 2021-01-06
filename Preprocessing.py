@@ -241,7 +241,7 @@ def Preprocess(path1,window_size,stride,test_fold):
 
             tempX=np.concatenate((alert_blink_unrolled, sleepy_blink_unrolled),axis=0)
             tempY = np.concatenate((alert_labels, sleepy_labels), axis=0)
-            if test_fold!="Fold3_part1":
+            if test_fold!="Fold1":
                 start=0
             else:
                 start=1
@@ -260,13 +260,27 @@ def Preprocess(path1,window_size,stride,test_fold):
 
 #path1 is the address to the folder of all subjects, each subject has three txt files for alert, semisleepy and sleepy levels
 path1='Dataset/'
+test = "F2"
 window_size=30
 stride=2
-Training='./npy/Blinks_F3.npy'
-Testing='./npy/BlinksTest_F3.npy'
+Training='./npy/Blinks_'+test+'.npy'
+Train_Labels = './npy/Labels_'+test+'.npy'
+Testing='./npy/BlinksTest_'+test+'.npy'
+Test_Labels = './npy/LabelsTest_'+test+'.npy'
+def t_fold(name):
+    if name == "F1":
+        return "Fold1"
+    if name == "F2":
+        return "Fold2"
+    if name == "F3":
+        return "Fold3"
+    if name == "F4":
+        return "Fold4"
+    if name == "F5":
+        return "Fold5"
 #################Normalizing with respect to different individuals####First Phase
-blinks,labels,blinksTest,labelTest=Preprocess(path1,window_size,stride,test_fold='Fold3')
+blinks,labels,blinksTest,labelTest=Preprocess(path1,window_size,stride,test_fold=t_fold(test))
 np.save(open(Training,'wb'),blinks)
-np.save(open('./npy/Labels_F3.npy', 'wb'),labels)
+np.save(open(Train_Labels, 'wb'),labels)
 np.save(open(Testing, 'wb'),blinksTest)
-np.save(open('./npy/LabelsTest_F3.npy', 'wb'),labelTest)
+np.save(open(Test_Labels, 'wb'),labelTest)
