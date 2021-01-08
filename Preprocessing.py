@@ -260,7 +260,7 @@ def Preprocess(path1,window_size,stride,test_fold):
 
 #path1 is the address to the folder of all subjects, each subject has three txt files for alert, semisleepy and sleepy levels
 path1='Dataset/'
-test = "F2"
+test = "F5"
 window_size=30
 stride=2
 Training='./npy/Blinks_'+test+'.npy'
