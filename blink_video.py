@@ -26,13 +26,16 @@ import ffmpeg
 def check_rotation(path_video_file):
     # this returns meta-data of the video file in form of a dictionary
     meta_dict = ffmpeg.probe(path_video_file)
-
+    ok = ["12", "16", "40", "60"]
     # from the dictionary, meta_dict['streams'][0]['tags']['rotate'] is the key
     # we are looking for
     try:
         meta_dict['streams'][0]['tags']['rotate']
     except:
-        return None
+        for s in ok:
+            if s in path_video_file:
+                return None
+        return cv2.ROTATE_90_CLOCKWISE
 
     rotateCode = None
     if int(meta_dict['streams'][0]['tags']['rotate']) == 90:
@@ -477,7 +480,7 @@ def blink_detector(output_file, input_video):
                 line.set_ydata(EAR_series)
                 plot_frame.draw()
                 frameMinus7 = Q.get()
-                # cv2.imshow("Frame", frameMinus7)
+                cv2.imshow("Frame", frameMinus7)
             elif Q.full():  # just to make way for the new input of the Q when the Q is full
                 junk = Q.get()
 
@@ -561,7 +564,7 @@ def blink_detector(output_file, input_video):
                 line.set_ydata(EAR_series)
                 plot_frame.draw()
                 frameMinus7 = Q.get()
-                # cv2.imshow("Frame", frameMinus7)q
+                cv2.imshow("Frame", frameMinus7)
             elif Q.full():
                 junk = Q.get()
 
@@ -581,7 +584,7 @@ def blink_detector(output_file, input_video):
 
 
 
-folders = "/media/andrea/Dati2/DLA/ProgettoDLA-Puglisi-/Dataset/Fold3_part1.zip"
+folders = "/media/andrea/Dati2/DLA/porco"
 folds_list = os.listdir(folders)
 threads = []
 for f, fold in enumerate(folds_list):
@@ -594,11 +597,11 @@ for f, fold in enumerate(folds_list):
         print("#########\n")
         files_per_person = os.listdir(path1 + '/' + folder)
         for file in files_per_person:
-            if file.startswith("10"):
-                output_file = path1 + '/' + folder + '/' + 'sleepy.txt'
-            elif file.startswith("0"):
+            if file.startswith("0"):
                 output_file = path1 + '/' + folder + '/' + 'alert.txt'
-            blink_detector(output_file, path1 + '/' + folder + '/' + file)
+            #elif file.startswith("10"):
+            #    output_file = path1 + '/' + folder + '/' + 'sleepy.txt'
+                blink_detector(output_file, path1 + '/' + folder + '/' + file)
             # threads.append(Thread(target=blink_detector, args=(output_file, path1 + '/' + folder + '/' + file)))
 
 thread_queue = deque(maxlen=4)
