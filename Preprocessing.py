@@ -253,14 +253,17 @@ def Preprocess(path1,window_size,stride,test_fold):
                 labels=tempY
 
     output,labels=unison_shuffled_copies(output,labels)
-    print('We have %d training datapoints!!!' %len(labels))
-    print('We have %d test datapoints!!!' % len(labelTest))
-    print('We have in TOTAL %d datapoints!!!' % (len(labelTest)+len(labels)))
-    return output,labels,outTest,labelTest
-
+    if test_fold!="Full":
+        print('We have %d training datapoints!!!' %len(labels))
+        print('We have %d test datapoints!!!' % len(labelTest))
+        print('We have in TOTAL %d datapoints!!!' % (len(labelTest)+len(labels)))
+        return output,labels,outTest,labelTest
+    else:
+        print('We have %d training datapoints!!!' % len(labels))
+        return output, labels, None, None
 #path1 is the address to the folder of all subjects, each subject has three txt files for alert, semisleepy and sleepy levels
 path1='Dataset/'
-test = "F5"
+test = "Full"
 window_size=30
 stride=2
 Training='./npy/Blinks_'+test+'.npy'
@@ -278,6 +281,7 @@ def t_fold(name):
         return "Fold4"
     if name == "F5":
         return "Fold5"
+    return "Full"
 #################Normalizing with respect to different individuals####First Phase
 blinks,labels,blinksTest,labelTest=Preprocess(path1,window_size,stride,test_fold=t_fold(test))
 np.save(open(Training,'wb'),blinks)
